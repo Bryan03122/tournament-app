@@ -7,9 +7,11 @@ import { Flowbite } from "flowbite-react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { LoginPage } from "./auth/pages/LoginPage.jsx";
 import { DashboardLayout } from "./common/layout/DashboardLayout.jsx";
+import { PlayerProfile } from "./players/pages/PlayerProfile.jsx";
 import { PlayersIndex } from "./players/pages/PlayersIndex.jsx";
 import { PrivateRoute } from "./routes/components/PrivateRoute.jsx";
 import { PublicRoute } from "./routes/components/PublicRoute.jsx";
+import { TournamentsIndex } from "./tournaments/pages/TournamentsIndex.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,13 +43,13 @@ const router = createBrowserRouter([
               },
               {
                 path: ":id",
-                element: <h1>Player Id</h1>,
+                element: <PlayerProfile />,
               },
             ],
           },
           {
             path: "tournaments",
-            element: <h1>Tournaments</h1>,
+            element: <TournamentsIndex />,
           },
         ],
       },

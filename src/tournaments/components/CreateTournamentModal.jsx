@@ -1,43 +1,35 @@
-import { FileInput, Modal, TextInput } from "flowbite-react";
+import { Modal, TextInput } from "flowbite-react";
+
 import { useForm } from "react-hook-form";
 import { Button } from "../../common/components/Button";
 import { InputLabel } from "../../common/components/InputLabel";
-import { usePlayerModalContext } from "../hooks/usePlayerModalContext";
-import { createPlayer } from "../services/firestore-player-service";
-import { uploadProfileImage } from "../services/storage-player-service";
+import { useTournamentModalContext } from "../hooks/useTournamentModalContext";
+import { createTournament } from "../services/firestore-tournament-service";
 
-export function CreatePlayerModal() {
-  const { show, close } = usePlayerModalContext();
+export function CreateTournamentModal() {
+  const { show, close } = useTournamentModalContext();
   return (
     <Modal show={show} onClose={close}>
-      <Modal.Header>Crear jugador</Modal.Header>
-      <CreatePlayerForm />
+      <Modal.Header>Crear Torneo</Modal.Header>
+      <CreateTournamentForm />
     </Modal>
   );
 }
 
-function CreatePlayerForm() {
-  const { close } = usePlayerModalContext();
+export function CreateTournamentForm() {
+  const { close } = useTournamentModalContext();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
+    // reset,
   } = useForm();
 
-  const onSubmit = async (data) => {
-    let player = {};
+  const onSubmit = (data) => {
+    const { name, date } = data;
 
-    const image = data.image[0];
-    player.profileImageUrl = await uploadProfileImage({ image });
-
-    player.name = data.name;
-    console.log(player);
-    await createPlayer({ player });
-
-    reset();
+    createTournament({ tournament: { name, date } });
   };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Modal.Body className="flex-col gap-4">
@@ -49,16 +41,19 @@ function CreatePlayerForm() {
             })}
             color={errors.name && "failure"}
             type="text"
-            placeholder="Bryan Mariño"
+            placeholder="Campeonato relámpago"
             helperText={errors.name && errors.name.message}
           />
         </div>
         <div>
-          <InputLabel>Foto</InputLabel>
-          <FileInput
-            {...register("image")}
-            color={errors.image && "failure"}
-            helperText={errors.image && errors.image.message}
+          <InputLabel>Fecha</InputLabel>
+          <TextInput
+            type="date"
+            {...register("date", {
+              required: "La fecha es requerida",
+            })}
+            color={errors.date && "failure"}
+            helperText={errors.date && errors.date.message}
           />
         </div>
       </Modal.Body>

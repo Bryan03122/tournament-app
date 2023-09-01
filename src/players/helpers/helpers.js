@@ -1,6 +1,6 @@
 export const playerFromJson = ({ json }) => {
-  console.log(json);
   return {
+    id: json["id"],
     name: json["name"],
     profileImageUrl: json["profileImageUrl"],
   };

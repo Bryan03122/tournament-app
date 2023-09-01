@@ -1,4 +1,4 @@
-import { collection, addDoc, query, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
 import { firestore } from "../../config/firebase-config";
 import { playerFromJson } from "../helpers/helpers";
 export const createPlayer = async ({ player }) => {
@@ -15,9 +15,9 @@ export const getPlayers = async () => {
 
     const querySnapshot = await getDocs(q);
 
-    const players = querySnapshot.docs.map((doc) =>
-      playerFromJson({ json: doc.data() })
-    );
+    const players = querySnapshot.docs.map((doc) => {
+      return playerFromJson({ json: { ...doc.data(), id: doc.id } });
+    });
     return players;
   } catch (e) {
     console.error(e);
