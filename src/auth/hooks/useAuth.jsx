@@ -1,38 +1,22 @@
-import { useReducer } from "react";
-import { getAuthenticatedUser } from "../services/firebase-auth-service";
-
-const actionTypes = {
-  LOGIN: "LOGIN",
-  LOGOUT: "LOGOUT",
-};
-
-const authReducer = (state, action) => {
-  switch (action.type) {
-    case actionTypes.LOGIN:
-      return { user: action.payload };
-    case actionTypes.LOGOUT:
-      return { user: null };
-  }
-};
+import { useEffect, useState } from "react";
+import { authStatus } from "../constants/constants";
+import { onAuthenticatedUserChanged } from "../services/firebase-auth-service";
 
 export const useAuth = () => {
-  const initFunc = () => {
-    const user = getAuthenticatedUser();
+  const [authenticatedUser, setAuthenticatedUser] = useState({
+    user: null,
+    status: authStatus.INIT,
+  });
 
-    return { user };
+  const setUser = (user) => {
+    setAuthenticatedUser({ user, status: authStatus.STARTED });
   };
-  const [state, dispatch] = useReducer(authReducer, null, initFunc);
-
-  const login = (user) => {
-    dispatch({ type: actionTypes.LOGIN, payload: user });
-  };
-  const logout = () => {
-    dispatch({ type: actionTypes.LOGOUT });
-  };
+  useEffect(() => {
+    onAuthenticatedUserChanged(setUser);
+  }, []);
 
   return {
-    login,
-    logout,
-    authenticatedUser: state,
+    authenticatedUser: authenticatedUser.user,
+    authStatus: authenticatedUser.status,
   };
 };

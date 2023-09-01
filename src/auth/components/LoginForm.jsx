@@ -1,12 +1,8 @@
 import { Button, TextInput } from "flowbite-react";
 import { InputLabel } from "../../common/components/InputLabel";
 import { login } from "../services/firebase-auth-service";
-import { useAuthContext } from "../hooks/useAuthContext";
 
 export function LoginForm() {
-  const { authContext } = useAuthContext();
-
-  const { login: loginContext } = authContext;
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
@@ -14,17 +10,16 @@ export function LoginForm() {
     const email = data.get("email").toString();
     const password = data.get("password").toString();
 
-    const user = await login({ email, password });
-    loginContext(user);
+    await login({ email, password });
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <InputLabel value="Correo Electrónico" htmlFor="email1" />
+        <InputLabel value="Correo Electrónico" htmlFor="email" />
         <TextInput
           name="email"
-          id="email1"
+          id="email"
           placeholder="nombre@email.com"
           required
           type="email"
